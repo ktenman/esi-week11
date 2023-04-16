@@ -1,0 +1,55 @@
+
+### Create a new user with Role/Authority ADMIN
+POST    http://localhost:8090/api/auth/signup HTTP/1.1
+content-type: application/json
+
+{
+    "name": "admin",
+    "email": "admin@ut.ee",
+    "password": "admin",
+    "roles": "ADMIN"
+}
+
+### Create a new user with Role/Authority USER
+POST  http://localhost:8090/api/new HTTP/1.1
+content-type: application/json
+{
+    "name": "user",
+    "email": "user@ut.ee",
+    "password": "user",
+    "roles": "USER"
+}
+
+### Authenticate  
+POST    http://localhost:8090/api/auth/authenticate HTTP/1.1
+content-type: application/json
+
+{
+    "name": "admin",
+    "password": "admin"
+}
+
+
+###############################################################
+
+### Public endpoint
+GET http://localhost:8090/api/auth/public
+
+
+### Protected endpoint - only admins (Role ADMIN) are allowed by Bearer token
+### Do not forget to add the token you receive after signing in, which will allow you to visit this endpoint, but not the one dedicated for users with USER roles
+GET http://localhost:8090/api/auth/admin
+Content-Type: application/json
+Authorization: Bearer 
+
+
+
+
+### Protected endpoint - only users (Role USER) are allowed by Bearer token
+GET http://localhost:8090/api/auth/user
+Content-Type: application/json
+Authorization: Bearer 
+
+
+
+
