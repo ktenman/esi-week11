@@ -18,9 +18,9 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public User addUser(User user) {
-//        userRepository.findByName(user.getName()).ifPresent(u -> {
-//            throw new RuntimeException("User already exists");
-//        });
+        userRepository.findByName(user.getName()).ifPresent(u -> {
+            throw new RuntimeException(String.format("User %s already exists", user.getName()));
+        });
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         log.info("A new user  {} is added", user);
