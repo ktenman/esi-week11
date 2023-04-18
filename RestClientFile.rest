@@ -4,29 +4,39 @@ POST    http://localhost:8090/api/auth/signup HTTP/1.1
 content-type: application/json
 
 {
-    "name": "admin",
-    "email": "admin@ut.ee",
-    "password": "admin",
-    "roles": "ADMIN"
+  "name": "admin",
+  "email": "admin@ut.ee",
+  "password": "admin",
+  "roles": "ADMIN"
 }
 
 ### Create a new user with Role/Authority USER
-POST  http://localhost:8090/api/new HTTP/1.1
+POST    http://localhost:8090/api/auth/signup HTTP/1.1
 content-type: application/json
+
 {
-    "name": "user",
-    "email": "user@ut.ee",
-    "password": "user",
-    "roles": "USER"
+  "name": "user",
+  "email": "user@ut.ee",
+  "password": "user",
+  "roles": "USER"
 }
 
-### Authenticate  
+### Authenticate
 POST    http://localhost:8090/api/auth/authenticate HTTP/1.1
 content-type: application/json
 
 {
-    "name": "admin",
-    "password": "admin"
+  "name": "admin",
+  "password": "admin"
+}
+
+### Authenticate
+POST    http://localhost:8090/api/auth/authenticate HTTP/1.1
+content-type: application/json
+
+{
+  "name": "user",
+  "password": "user"
 }
 
 
@@ -40,16 +50,13 @@ GET http://localhost:8090/api/auth/public
 ### Do not forget to add the token you receive after signing in, which will allow you to visit this endpoint, but not the one dedicated for users with USER roles
 GET http://localhost:8090/api/auth/admin
 Content-Type: application/json
-Authorization: Bearer 
-
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6IkFETUlOIiwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODE3OTk4MzksImV4cCI6MTY4MTgwMzQzOX0.ylENAfpz1IRM8-qz1-Ja4Q68wXNau2B1LYc7Ge0a3mk
 
 
 ### Protected endpoint - only users (Role USER) are allowed by Bearer token
 GET http://localhost:8090/api/auth/user
 Content-Type: application/json
-Authorization: Bearer 
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6IlVTRVIiLCJzdWIiOiJ1c2VyIiwiaWF0IjoxNjgxNzk4MjcyLCJleHAiOjE2ODE4MDE4NzJ9.1gkN1UcXm1rOS-uXhNe0BZG_wfTFpacr3LVDn2VVZKw
 
 
 

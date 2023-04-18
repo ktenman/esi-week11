@@ -1,17 +1,16 @@
 package com.esi.authservice.config;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.esi.authservice.users.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.esi.authservice.users.model.User;
+import java.util.Arrays;
+import java.util.List;
 
-public class MyUserDetails extends User implements UserDetails  {
+public class MyUserDetails extends User implements UserDetails {
 
-    private User user;
+    private final User user;
 
     public MyUserDetails(final User user) {
         this.user = user;
@@ -20,7 +19,7 @@ public class MyUserDetails extends User implements UserDetails  {
     @Override
     public List<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRoles());
-        return Arrays.asList(authority);
+        return List.of(authority);
     }
 
     @Override
@@ -33,7 +32,7 @@ public class MyUserDetails extends User implements UserDetails  {
         return user.getName();
     }
 
-   //hard-coding these attributes
+    //hard-coding these attributes
     @Override
     public boolean isAccountNonExpired() {
         return true;

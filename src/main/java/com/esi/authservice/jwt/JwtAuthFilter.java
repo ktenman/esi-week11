@@ -1,5 +1,6 @@
 package com.esi.authservice.jwt;
 
+import com.esi.authservice.config.MyUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,13 +13,11 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.esi.authservice.config.MyUserDetailsService;
-
 import java.io.IOException;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
-// OncePerRequestFilter is a special type of filter in Spring, and it guarantees that the filter is executed only once for a given request.
+    // OncePerRequestFilter is a special type of filter in Spring, and it guarantees that the filter is executed only once for a given request.
     @Autowired
     private JwtService jwtService;
 
@@ -45,7 +44,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (jwtService.validateToken(token, userDetails)) {
                 // UsernamePasswordAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities)
                 // We are passing the userDetails,  credentials are not none yet (null), then we get the authorities from the userDetails
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,  null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 // AuthenticationDetailsSource builds the details object from an HttpServletRequest object, creating a WebAuthenticationDetails .
                 // .buildDetails is called by a class when it wishes a new authentication details instance to be created.
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

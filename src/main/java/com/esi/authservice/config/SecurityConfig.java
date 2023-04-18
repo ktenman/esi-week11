@@ -1,5 +1,7 @@
 package com.esi.authservice.config;
 
+import com.esi.authservice.jwt.JwtAuthFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,13 +22,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.esi.authservice.jwt.JwtAuthFilter;
-
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import java.util.Arrays;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -43,19 +42,19 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-    return new MyUserDetailsService();
+        return new MyUserDetailsService();
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return  http
-                .csrf(csrf -> csrf.disable())
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                                .requestMatchers("/api/auth/public", "/api/auth/signup", "/api/auth/authenticate").permitAll()
-                                .requestMatchers("/api/auth/admin").hasAuthority("ADMIN")
-                                .requestMatchers("/api/auth/user").hasAuthority("USER")
-                                .anyRequest().authenticated())
+                        .requestMatchers("/api/auth/public", "/api/auth/signup", "/api/auth/authenticate").permitAll()
+//                        .requestMatchers("/api/auth/admin").hasAuthority("ADMIN")
+                        .requestMatchers("/api/auth/user").hasAuthority("USER")
+                        .anyRequest().authenticated())
                 // Enabling the session manager to control the session
                 .sessionManagement()
                 // .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -67,11 +66,11 @@ public class SecurityConfig {
                 // We are telling Spring Boot to check authFilter first, then, check the UsernamePasswordAuthenticationFilter
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-    } 
+    }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider authenticationProvider=new DaoAuthenticationProvider();
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService());
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
@@ -79,11 +78,11 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-    return config.getAuthenticationManager();
+        return config.getAuthenticationManager();
     }
 
     // You need this to deactivate the cors issue
-    @Bean   
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080")); //or add * to allow all origins
@@ -92,7 +91,7 @@ public class SecurityConfig {
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setExposedHeaders(Arrays.asList("custom-header1", "custom-header2"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); 
-        return source; 
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
